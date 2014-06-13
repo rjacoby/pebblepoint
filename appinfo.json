@@ -1,0 +1,18 @@
+{
+    "versionCode": 1,
+    "uuid": "1d6e89a9-f05c-49c2-bf6f-81a6e42fd3e6",
+    "capabilities": [
+        "configurable"
+    ],
+    "appKeys": {},
+    "shortName": "PebblePoint",
+    "companyName": "rjacoby@astrokid.com",
+    "resources": {
+        "media": []
+    },
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    },
+    "longName": "PebblePoint"
+}
