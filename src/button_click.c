@@ -9,18 +9,22 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(prompt_text_layer, "Previous");
+  vibes_short_pulse();
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(prompt_text_layer, "Next");
+  vibes_short_pulse();
 }
 
 static void long_up_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(prompt_text_layer, "First");
+  vibes_double_pulse();
 }
 
 static void long_down_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(prompt_text_layer, "Last");
+  vibes_double_pulse();
 }
 
 static void click_config_provider(void *context) {
