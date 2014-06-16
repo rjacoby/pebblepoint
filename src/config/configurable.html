@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Configurable</title>
+    <title>PebblePoint Configuration</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.js"></script>
   </head>
   <body>
     <div data-role="page" id="main">
@@ -15,58 +16,75 @@
       </div>
 
       <div data-role="content">
-
         <h2>Enter the values from your Mac:</h2>
 
-        <div data-role="fieldcontain">
-          <label for="address">Address:</label>
-          <input type="text" length="15" name="address" id="address" required pattern="\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b" placeholder="192.168.1.100"/>
-        </div>
+        <form id="configForm" method="get" action="#">
+          <div id="messageBox">
+            <ul></ul>
+          </div>
+          <div data-role="fieldcontain">
+            <label for="address">Server IP Address:</label>
+            <input type="text" length="15" name="address" id="address" required placeholder="192.168.1.100"/>
+          </div>
 
-        <div data-role="fieldcontain">
-          <label for="port">Port:</label>
-          <input type="number" length="5" name="port" id="port" required placeholder="7325"/>
-        </div>
+          <div data-role="fieldcontain">
+            <label for="port">Server Port:</label>
+            <input type="number" length="5" name="port" id="port" required placeholder="7325" value="7325"/>
+          </div>
 
 
-        <div class="ui-body ui-body-b">
-          <fieldset class="ui-grid-a">
+          <div class="ui-body ui-body-b">
+            <fieldset class="ui-grid-a">
               <div class="ui-block-a"><button type="submit" data-theme="d" id="b-cancel">Cancel</button></div>
               <div class="ui-block-b"><button type="submit" data-theme="a" id="b-submit">Submit</button></div>
             </fieldset>
           </div>
         </div>
-      </div>
+      </form>
     </div>
     <script>
       function saveOptions() {
         var options = {
-          'name': $("#name").val(),
-          'special-feature': $("#special-feature").val(),
-          'checkbox-cheetos': $("#checkbox-cheetos").is(':checked'),
-          'checkbox-doritos': $("#checkbox-doritos").is(':checked'),
-          'checkbox-fritos': $("#checkbox-fritos").is(':checked'),
-          'checkbox-sunchips': $("#checkbox-sunchips").is(':checked')
+          'address': $("#address").val(),
+          'port': $("#port").val()
         }
         return options;
       }
 
+      $('#configForm').validate({
+        errorLabelContainer: "#messageBox",
+        wrapper: "li",
+        submitHandler: function() {
+          var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
+          console.log("Warping to: " + location);
+          console.log(location);
+          document.location = location;
+        },
+        rules: {
+          address: {
+            required: true,
+            IP4Checker: true
+          },
+          port: {
+            required: true,
+            number: true
+          }
+        }
+      });
+
       $().ready(function() {
+
         $("#b-cancel").click(function() {
           console.log("Cancel");
           document.location = "pebblejs://close";
         });
 
-        $("#b-submit").click(function() {
-          console.log("Submit");
-
-          var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
-          console.log("Warping to: " + location);
-          console.log(location);
-          document.location = location;
-        });
-
       });
+
+      $.validator.addMethod('IP4Checker', function(value) {
+        console.log(value);
+        return value.match(/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/);
+       }, 'Invalid Server IP Address');
     </script>
   </body>
 </html>
