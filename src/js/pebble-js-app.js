@@ -47,7 +47,7 @@ function sendPowerPointCommand(command, callback, errorCallback) {
 Pebble.addEventListener("appmessage",
   function(e) {
     console.log("Received message: " + e.payload);
-    command = e.payload[0];
+    var command = e.payload[0];
     console.log("Command: " + command);
     // TODO: call the send helper with a munged payload
     sendPowerPointCommand(command);
