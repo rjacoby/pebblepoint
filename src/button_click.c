@@ -29,7 +29,7 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 static void long_up_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(prompt_text_layer, "First");
-  send_message_to_phone("next");
+  send_message_to_phone("first");
   vibes_double_pulse();
 }
 
