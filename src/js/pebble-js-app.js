@@ -22,7 +22,7 @@ Pebble.addEventListener("webviewclosed", function(e) {
 function sendPowerPointCommand(command, callback, errorCallback) {
     var req = new XMLHttpRequest();
     // TODO: test if we're configured
-    url = "http://" + config.address + ":" + config.port + "/go/" + command;
+    var url = "http://" + config.address + ":" + config.port + "/go/" + command;
     console.log("POSTing to: " + url);
     req.open("POST", url, true);
     req.responseType = "arraybuffer";
@@ -30,7 +30,7 @@ function sendPowerPointCommand(command, callback, errorCallback) {
       console.log("loaded");
       var body = req.response;
       if(req.status == 200 && body) {
-        responseData = JSON.parse(body);
+        var responseData = JSON.parse(body);
         console.log("body", responseData);
         callback(body); //???
       }
