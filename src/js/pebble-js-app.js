@@ -22,6 +22,16 @@ Pebble.addEventListener("webviewclosed", function(e) {
   }
 });
 
+// Success callback
+function sendSuccessToPebble(jsonData) {
+  console.log("success callback", jsonData);
+}
+
+// Failure callback
+function sendFailureToPebble(jsonData) {
+  console.log("failure callback", jsonData);
+}
+
 function sendPowerPointCommand(command, callback, errorCallback) {
     var req = new XMLHttpRequest();
     // Use the JS toolkit's _own_ localStorage - it's not shared with the
@@ -38,9 +48,12 @@ function sendPowerPointCommand(command, callback, errorCallback) {
         console.log(req.responseText);
         var responseData = JSON.parse(req.responseText);
         console.log("responseData", responseData);
-        callback(responseData); //???
-      }
-      else {
+        if (responseData.success) {
+          callback(responseData);
+        } else {
+          errorCallback(responseData);
+        }
+      } else {
         errorCallback("Request status is " + req.status);
       }
     };
@@ -55,7 +68,6 @@ Pebble.addEventListener("appmessage",
     console.log("Received message: " + e.payload);
     var command = e.payload[0];
     console.log("Command: " + command);
-    // TODO: call the send helper with a munged payload
-    sendPowerPointCommand(command);
+    sendPowerPointCommand(command, sendSuccessToPebble, sendFailureToPebble);
   }
 );
