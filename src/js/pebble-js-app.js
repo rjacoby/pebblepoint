@@ -34,9 +34,9 @@ function sendPowerPointCommand(command, callback, errorCallback) {
     req.onload = function(e) {
       console.log("loaded");
       var body = req.response;
-      if(req.status == 200 && body) {
-        console.log(body);
-        var responseData = JSON.parse(body);
+      if(req.status == 200 && req.responseText) {
+        console.log(req.responseText);
+        var responseData = JSON.parse(req.responseText);
         console.log("responseData", responseData);
         callback(responseData); //???
       }
