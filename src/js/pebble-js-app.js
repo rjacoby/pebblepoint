@@ -30,9 +30,10 @@ function sendPowerPointCommand(command, callback, errorCallback) {
       console.log("loaded");
       var body = req.response;
       if(req.status == 200 && body) {
+        console.log(body);
         var responseData = JSON.parse(body);
-        console.log("body", responseData);
-        callback(body); //???
+        console.log("responseData", responseData);
+        callback(responseData); //???
       }
       else {
         errorCallback("Request status is " + req.status);
