@@ -55,7 +55,12 @@
         errorLabelContainer: "#messageBox",
         wrapper: "li",
         submitHandler: function() {
-          var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
+          jso = JSON.stringify(saveOptions());
+          if(typeof window.localStorage !== "undefined") {
+            window.localStorage.pebblepoint_options = jso;
+          }
+
+          var location = "pebblejs://close#" + encodeURIComponent(jso);
           console.log("Warping to: " + location);
           console.log(location);
           document.location = location;
@@ -73,6 +78,13 @@
       });
 
       $().ready(function() {
+        if(typeof window.localStorage !== "undefined") {
+          if(window.localStorage.pebblepoint_options) {
+            jso = JSON.parse(window.localStorage.pebblepoint_options);
+            $("#address").val(jso["address"]);
+            $("#port").val(jso["port"]);
+          }
+        }
 
         $("#b-cancel").click(function() {
           console.log("Cancel");

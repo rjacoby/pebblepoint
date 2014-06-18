@@ -1,8 +1,8 @@
 var initialized = false;
-var config = {};
 
 Pebble.addEventListener("ready", function() {
   console.log("ready called!");
+  console.log("stored options", window.localStorage.pebblepoint_options);
   initialized = true;
 });
 
@@ -15,13 +15,18 @@ Pebble.addEventListener("webviewclosed", function(e) {
   console.log("configuration closed");
   // webview closed
   var options = JSON.parse(decodeURIComponent(e.response));
-  console.log("Options = " + JSON.stringify(options));
-  config = options;
+  jso = JSON.stringify(options);
+  console.log("Options = " + jso);
+  if(typeof window.localStorage !== "undefined") {
+    window.localStorage.pebblepoint_options = jso;
+  }
 });
 
 function sendPowerPointCommand(command, callback, errorCallback) {
     var req = new XMLHttpRequest();
-    // TODO: test if we're configured
+    // Use the JS toolkit's _own_ localStorage - it's not shared with the
+    // config view's browser scoped localStorage.
+    config = JSON.parse(window.localStorage.pebblepoint_options); // TODO: test for sanity?
     var url = "http://" + config.address + ":" + config.port + "/go/" + command;
     console.log("POSTing to: " + url);
     req.open("POST", url, true);
