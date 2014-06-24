@@ -4,7 +4,13 @@
     "capabilities": [
         "configurable"
     ],
-    "appKeys": {},
+    "appKeys": {
+      "command": 0,
+      "success": 1,
+      "message": 2,
+      "slideIndex": 3,
+      "slideTotal": 4
+    },
     "shortName": "PebblePoint",
     "companyName": "rjacoby@astrokid.com",
     "resources": {

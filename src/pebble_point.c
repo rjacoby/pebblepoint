@@ -86,12 +86,12 @@ void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, voi
 
 // Give ACK to phone
 void in_received_handler(DictionaryIterator *received, void *context) {
-  // incoming message received
+  text_layer_set_text(prompt_text_layer, "Received a SUCCESS");
 }
 
 // Give NACK to phone
 void in_dropped_handler(AppMessageResult reason, void *context) {
-  // incoming message dropped
+  text_layer_set_text(prompt_text_layer, "Received a FAIL");
 }
 
 

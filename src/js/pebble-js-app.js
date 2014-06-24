@@ -25,11 +25,21 @@ Pebble.addEventListener("webviewclosed", function(e) {
 // Success callback
 function sendSuccessToPebble(jsonData) {
   console.log("success callback", jsonData);
+  Pebble.sendAppMessage({
+    "success": 1,
+    "message": "Navigated OK",
+    "slideIndex": jsonData.slideIndex,
+    "slideTotal": jsonData.slideTotal
+  });
 }
 
 // Failure callback
 function sendFailureToPebble(jsonData) {
   console.log("failure callback", jsonData);
+  Pebble.sendAppMessage({
+    "success": 0,
+    "message": jsonData.errorMessage
+  });
 }
 
 function sendPowerPointCommand(command, callback, errorCallback) {
@@ -66,7 +76,7 @@ function sendPowerPointCommand(command, callback, errorCallback) {
 Pebble.addEventListener("appmessage",
   function(e) {
     console.log("Received message: " + e.payload);
-    var command = e.payload[0];
+    var command = e.payload.command;
     console.log("Command: " + command);
     sendPowerPointCommand(command, sendSuccessToPebble, sendFailureToPebble);
   }
