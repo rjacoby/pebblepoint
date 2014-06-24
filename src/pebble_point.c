@@ -72,6 +72,8 @@ static void window_load(Window *window) {
 
 static void window_unload(Window *window) {
   text_layer_destroy(prompt_text_layer);
+  text_layer_destroy(up_label_text_layer);
+  text_layer_destroy(down_label_text_layer);
 }
 
 // Handle ACK from phone
@@ -84,9 +86,24 @@ void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, voi
   // outgoing message failed
 }
 
+enum {
+  AKEY_COMMAND,
+  AKEY_SUCCESS,
+  AKEY_MESSAGE,
+  AKEY_SLIDE_INDEX,
+  AKEY_SLIDE_TOTAL
+};
+
 // Give ACK to phone
 void in_received_handler(DictionaryIterator *received, void *context) {
-  text_layer_set_text(prompt_text_layer, "Received a SUCCESS");
+  Tuple *index_tuple = dict_find(received, AKEY_SLIDE_INDEX);
+  Tuple *total_tuple = dict_find(received, AKEY_SLIDE_TOTAL);
+  if (index_tuple && total_tuple){
+    char message[16] = "";
+    snprintf(message, sizeof message, "%s of %s", index_tuple->value->cstring, total_tuple->value->cstring);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Message: %s", message);
+    text_layer_set_text(prompt_text_layer, "why cant I pass the message here?");
+  }
 }
 
 // Give NACK to phone
