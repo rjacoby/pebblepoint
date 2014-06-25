@@ -2,7 +2,7 @@
 
 static Window *window;
 static Layer *prompt_layer, *status_layer, *controls_layer;
-static TextLayer *prompt_text_layer, *up_label_text_layer, *down_label_text_layer;
+static TextLayer *prompt_text_layer, *status_text_layer, *up_label_text_layer, *down_label_text_layer;
 
 static void send_message_to_phone(char* command) {
   DictionaryIterator *iter;
@@ -50,29 +50,40 @@ static void click_config_provider(void *context) {
 }
 
 static void window_load(Window *window) {
+  //*** Set up to level container
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
+  //*** Controls container
   controls_layer = layer_create(bounds);
-
+  // Top control
   up_label_text_layer = text_layer_create((GRect) { .origin = { 0, 0}, .size = { bounds.size.w - 10, 20} });
   text_layer_set_text(up_label_text_layer, "PREV");
   text_layer_set_text_alignment(up_label_text_layer, GTextAlignmentRight);
   layer_add_child(controls_layer, text_layer_get_layer(up_label_text_layer));
-
+  // Bottom control
   down_label_text_layer = text_layer_create((GRect) { .origin = { 0, bounds.size.h - 20}, .size = { bounds.size.w - 10, 20} });
   text_layer_set_text(down_label_text_layer, "NEXT");
   text_layer_set_text_alignment(down_label_text_layer, GTextAlignmentRight);
   layer_add_child(controls_layer, text_layer_get_layer(down_label_text_layer));
-
+  // Add it!
   layer_add_child(window_layer, controls_layer);
 
+  //*** Prompt; can be replaced with status
   prompt_text_layer = text_layer_create((GRect) { .origin = { 0, 40 }, .size = { bounds.size.w, 70 } });
   text_layer_set_text(prompt_text_layer, "Use Up/Down buttons for Prev/Next\n\nHold to jump to First/Last");
   text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentCenter);
   // text_layer_set_background_color(prompt_text_layer, GColorBlack);
   // text_layer_set_text_color(prompt_text_layer, GColorWhite);
   layer_add_child(window_layer, text_layer_get_layer(prompt_text_layer));
+
+  //*** Status; starts out hidden
+  status_layer = layer_create((GRect) { .origin = {0, 20}, .size = { bounds.size.w, bounds.size.h - 40}});
+  status_text_layer = text_layer_create(layer_get_bounds(status_layer));
+  text_layer_set_background_color(status_text_layer, GColorBlack);
+  layer_add_child(status_layer, text_layer_get_layer(status_text_layer));
+  layer_add_child(window_layer, status_layer);
+  layer_set_hidden(status_layer, true);
 }
 
 static void window_unload(Window *window) {
