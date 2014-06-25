@@ -13,29 +13,29 @@ static void send_message_to_phone(char* command) {
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(prompt_text_layer, "Selected");
+  // text_layer_set_text(prompt_text_layer, "Selected");
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(prompt_text_layer, "Previous");
+  // text_layer_set_text(prompt_text_layer, "Previous");
   send_message_to_phone("previous");
   vibes_short_pulse();
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(prompt_text_layer, "Next");
+  // text_layer_set_text(prompt_text_layer, "Next");
   send_message_to_phone("next");
   vibes_short_pulse();
 }
 
 static void long_up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(prompt_text_layer, "First");
+  // text_layer_set_text(prompt_text_layer, "First");
   send_message_to_phone("first");
   vibes_double_pulse();
 }
 
 static void long_down_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(prompt_text_layer, "Last");
+  // text_layer_set_text(prompt_text_layer, "Last");
   send_message_to_phone("last");
   vibes_double_pulse();
 }
@@ -69,16 +69,21 @@ static void window_load(Window *window) {
   // Add it!
   layer_add_child(window_layer, controls_layer);
 
+  //*** GRect for the middle of screen
+  GRect mid_rect = (GRect) { .origin = {0, 20}, .size = { bounds.size.w, bounds.size.h - 40}};
+
   //*** Prompt; can be replaced with status
-  prompt_text_layer = text_layer_create((GRect) { .origin = { 0, 40 }, .size = { bounds.size.w, 70 } });
+  prompt_layer = layer_create(mid_rect);
+  prompt_text_layer = text_layer_create(layer_get_bounds(prompt_layer));
   text_layer_set_text(prompt_text_layer, "Use Up/Down buttons for Prev/Next\n\nHold to jump to First/Last");
   text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentCenter);
   // text_layer_set_background_color(prompt_text_layer, GColorBlack);
   // text_layer_set_text_color(prompt_text_layer, GColorWhite);
-  layer_add_child(window_layer, text_layer_get_layer(prompt_text_layer));
+  layer_add_child(prompt_layer, text_layer_get_layer(prompt_text_layer));
+  layer_add_child(window_layer, prompt_layer);
 
   //*** Status; starts out hidden
-  status_layer = layer_create((GRect) { .origin = {0, 20}, .size = { bounds.size.w, bounds.size.h - 40}});
+  status_layer = layer_create(mid_rect);
   status_text_layer = text_layer_create(layer_get_bounds(status_layer));
   text_layer_set_background_color(status_text_layer, GColorBlack);
   text_layer_set_text_color(status_text_layer, GColorWhite);
