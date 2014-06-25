@@ -81,6 +81,7 @@ static void window_load(Window *window) {
   status_layer = layer_create((GRect) { .origin = {0, 20}, .size = { bounds.size.w, bounds.size.h - 40}});
   status_text_layer = text_layer_create(layer_get_bounds(status_layer));
   text_layer_set_background_color(status_text_layer, GColorBlack);
+  text_layer_set_text_color(status_text_layer, GColorWhite);
   layer_add_child(status_layer, text_layer_get_layer(status_text_layer));
   layer_add_child(window_layer, status_layer);
   layer_set_hidden(status_layer, true);
@@ -123,7 +124,10 @@ void in_received_handler(DictionaryIterator *received, void *context) {
     char message[16] = "";
     snprintf(message, sizeof message, "%s of %s", index_tuple->value->cstring, total_tuple->value->cstring);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Message: %s", message);
-    text_layer_set_text(prompt_text_layer, "why cant I pass the message here?");
+    text_layer_set_text(status_text_layer, "why cant I pass the message here?");
+
+    layer_set_hidden(status_layer, false);
+    // layer_set_hidden(prompt_layer, true);
   }
 }
 
