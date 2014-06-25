@@ -1,6 +1,7 @@
 #include <pebble.h>
 
 static Window *window;
+static Layer *prompt_layer, *status_layer, *controls_layer;
 static TextLayer *prompt_text_layer, *up_label_text_layer, *down_label_text_layer;
 
 static void send_message_to_phone(char* command) {
@@ -52,28 +53,37 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
+  controls_layer = layer_create(bounds);
+
+  up_label_text_layer = text_layer_create((GRect) { .origin = { 0, 0}, .size = { bounds.size.w - 10, 20} });
+  text_layer_set_text(up_label_text_layer, "PREV");
+  text_layer_set_text_alignment(up_label_text_layer, GTextAlignmentRight);
+  layer_add_child(controls_layer, text_layer_get_layer(up_label_text_layer));
+
+  down_label_text_layer = text_layer_create((GRect) { .origin = { 0, bounds.size.h - 20}, .size = { bounds.size.w - 10, 20} });
+  text_layer_set_text(down_label_text_layer, "NEXT");
+  text_layer_set_text_alignment(down_label_text_layer, GTextAlignmentRight);
+  layer_add_child(controls_layer, text_layer_get_layer(down_label_text_layer));
+
+  layer_add_child(window_layer, controls_layer);
+
   prompt_text_layer = text_layer_create((GRect) { .origin = { 0, 40 }, .size = { bounds.size.w, 70 } });
   text_layer_set_text(prompt_text_layer, "Use Up/Down buttons for Prev/Next\n\nHold to jump to First/Last");
   text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentCenter);
   // text_layer_set_background_color(prompt_text_layer, GColorBlack);
   // text_layer_set_text_color(prompt_text_layer, GColorWhite);
   layer_add_child(window_layer, text_layer_get_layer(prompt_text_layer));
-
-  up_label_text_layer = text_layer_create((GRect) { .origin = { 0, 0}, .size = { bounds.size.w - 10, 20} });
-  text_layer_set_text(up_label_text_layer, "PREV");
-  text_layer_set_text_alignment(up_label_text_layer, GTextAlignmentRight);
-  layer_add_child(window_layer, text_layer_get_layer(up_label_text_layer));
-
-  down_label_text_layer = text_layer_create((GRect) { .origin = { 0, bounds.size.h - 20}, .size = { bounds.size.w - 10, 20} });
-  text_layer_set_text(down_label_text_layer, "NEXT");
-  text_layer_set_text_alignment(down_label_text_layer, GTextAlignmentRight);
-  layer_add_child(window_layer, text_layer_get_layer(down_label_text_layer));
 }
 
 static void window_unload(Window *window) {
   text_layer_destroy(prompt_text_layer);
+  layer_destroy(prompt_layer);
+
+  layer_destroy(status_layer);
+
   text_layer_destroy(up_label_text_layer);
   text_layer_destroy(down_label_text_layer);
+  layer_destroy(controls_layer);
 }
 
 // Handle ACK from phone
@@ -114,6 +124,7 @@ void in_dropped_handler(AppMessageResult reason, void *context) {
 
 static void init(void) {
   window = window_create();
+
   window_set_click_config_provider(window, click_config_provider);
   window_set_window_handlers(window, (WindowHandlers) {
 	  .load = window_load,
