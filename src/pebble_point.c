@@ -126,13 +126,15 @@ void in_received_handler(DictionaryIterator *received, void *context) {
   Tuple *index_tuple = dict_find(received, AKEY_SLIDE_INDEX);
   Tuple *total_tuple = dict_find(received, AKEY_SLIDE_TOTAL);
   if (index_tuple && total_tuple){
-    char message[16] = "";
-    snprintf(message, sizeof message, "%u of %u", (unsigned int)index_tuple->value->uint32, (unsigned int)total_tuple->value->uint32);
+    static char message[16] = "";
+    snprintf(message, sizeof(message), "%u of %u", (unsigned int)index_tuple->value->uint32, (unsigned int)total_tuple->value->uint32);
+    // Works to logger
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Message: %s", message);
+    // Doesn't work to Pebble screen
     text_layer_set_text(status_text_layer, message);
 
     layer_set_hidden(status_layer, false);
-    // layer_set_hidden(prompt_layer, true);
+    layer_set_hidden(prompt_layer, true);
   }
 }
 
