@@ -53,6 +53,7 @@ static void window_load(Window *window) {
   //*** Set up to level container
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
+  window_set_background_color(window, GColorBlack);
 
   //*** Controls container
   controls_layer = layer_create(bounds);
@@ -60,11 +61,15 @@ static void window_load(Window *window) {
   up_label_text_layer = text_layer_create((GRect) { .origin = { 0, 0}, .size = { bounds.size.w - 10, 20} });
   text_layer_set_text(up_label_text_layer, "PREV");
   text_layer_set_text_alignment(up_label_text_layer, GTextAlignmentRight);
+  text_layer_set_background_color(up_label_text_layer, GColorBlack);
+  text_layer_set_text_color(up_label_text_layer, GColorWhite);
   layer_add_child(controls_layer, text_layer_get_layer(up_label_text_layer));
   // Bottom control
   down_label_text_layer = text_layer_create((GRect) { .origin = { 0, bounds.size.h - 20}, .size = { bounds.size.w - 10, 20} });
   text_layer_set_text(down_label_text_layer, "NEXT");
   text_layer_set_text_alignment(down_label_text_layer, GTextAlignmentRight);
+  text_layer_set_background_color(down_label_text_layer, GColorBlack);
+  text_layer_set_text_color(down_label_text_layer, GColorWhite);
   layer_add_child(controls_layer, text_layer_get_layer(down_label_text_layer));
   // Add it!
   layer_add_child(window_layer, controls_layer);
@@ -77,8 +82,8 @@ static void window_load(Window *window) {
   prompt_text_layer = text_layer_create(layer_get_bounds(prompt_layer));
   text_layer_set_text(prompt_text_layer, "Use Up/Down buttons for Prev/Next\n\nHold to jump to First/Last");
   text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentCenter);
-  // text_layer_set_background_color(prompt_text_layer, GColorBlack);
-  // text_layer_set_text_color(prompt_text_layer, GColorWhite);
+  text_layer_set_background_color(prompt_text_layer, GColorBlack);
+  text_layer_set_text_color(prompt_text_layer, GColorWhite);
   layer_add_child(prompt_layer, text_layer_get_layer(prompt_text_layer));
   layer_add_child(window_layer, prompt_layer);
 
