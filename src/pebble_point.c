@@ -2,7 +2,7 @@
 
 static Window *window;
 static Layer *prompt_layer, *status_layer, *controls_layer;
-static TextLayer *prompt_text_layer, *status_text_layer, *up_label_text_layer, *down_label_text_layer;
+static TextLayer *prompt_text_layer, *status_text_layer, *slide_index_text_layer, *up_label_text_layer, *down_label_text_layer;
 
 static void send_message_to_phone(char* command) {
   DictionaryIterator *iter;
@@ -90,8 +90,10 @@ static void window_load(Window *window) {
   //*** Status; starts out hidden
   status_layer = layer_create(mid_rect);
   status_text_layer = text_layer_create(layer_get_bounds(status_layer));
+  text_layer_set_text_alignment(status_text_layer, GTextAlignmentCenter);
   text_layer_set_background_color(status_text_layer, GColorBlack);
   text_layer_set_text_color(status_text_layer, GColorWhite);
+  text_layer_set_font(status_text_layer, fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49));
   layer_add_child(status_layer, text_layer_get_layer(status_text_layer));
   layer_add_child(window_layer, status_layer);
   layer_set_hidden(status_layer, true);
