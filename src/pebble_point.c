@@ -75,12 +75,12 @@ static void window_load(Window *window) {
   layer_add_child(window_layer, controls_layer);
 
   //*** GRect for the middle of screen
-  GRect mid_rect = (GRect) { .origin = {0, 20}, .size = { bounds.size.w, bounds.size.h - 40}};
+  GRect mid_rect = (GRect) { .origin = {0, 40}, .size = { bounds.size.w, bounds.size.h - 60}};
 
   //*** Prompt; can be replaced with status
   prompt_layer = layer_create(mid_rect);
   prompt_text_layer = text_layer_create(layer_get_bounds(prompt_layer));
-  text_layer_set_text(prompt_text_layer, "Use Up/Down buttons for Prev/Next\n\nHold to jump to First/Last");
+  text_layer_set_text(prompt_text_layer, "Press for Prev/Next\n\nHold for First/Last");
   text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentCenter);
   text_layer_set_background_color(prompt_text_layer, GColorBlack);
   text_layer_set_text_color(prompt_text_layer, GColorWhite);
