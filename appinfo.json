@@ -14,7 +14,14 @@
     "shortName": "PebblePoint",
     "companyName": "rjacoby@astrokid.com",
     "resources": {
-        "media": []
+        "media": [
+          {
+            "type": "png",
+            "name": "IMAGE_MENU_LOGO",
+            "file": "images/ppt_outline.png",
+            "menuIcon": true
+          }
+        ]
     },
     "versionLabel": "1.0",
     "watchapp": {
