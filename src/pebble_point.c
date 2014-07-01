@@ -4,6 +4,13 @@ static Window *window;
 static Layer *prompt_layer, *status_layer, *controls_layer;
 static TextLayer *prompt_text_layer, *status_text_layer, *slide_index_text_layer, *up_label_text_layer, *down_label_text_layer;
 
+static void show_prompt(char* prompt_message){
+  text_layer_set_text(prompt_text_layer, prompt_message);
+  text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentLeft);
+  layer_set_hidden(prompt_layer, false);
+  layer_set_hidden(status_layer, true);
+}
+
 static void send_message_to_phone(char* command) {
   DictionaryIterator *iter;
   app_message_outbox_begin(&iter);
@@ -131,10 +138,7 @@ void out_sent_handler(DictionaryIterator *sent, void *context) {
 void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
   // outgoing message failed
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Message NOT delivered to phone");
-  text_layer_set_text(prompt_text_layer, "Cannot connect to phone");
-  text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentLeft);
-  layer_set_hidden(prompt_layer, false);
-  layer_set_hidden(status_layer, true);
+  show_prompt("Cannot connect to phone");
 }
 
 enum {
@@ -168,10 +172,7 @@ void in_received_handler(DictionaryIterator *received, void *context) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Failure");
     Tuple *error_message_tuple = dict_find(received, AKEY_MESSAGE);
     APP_LOG(APP_LOG_LEVEL_DEBUG, error_message_tuple->value->cstring);
-    text_layer_set_text(prompt_text_layer, error_message_tuple->value->cstring);
-    text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentLeft);
-    layer_set_hidden(prompt_layer, false);
-    layer_set_hidden(status_layer, true);
+    show_prompt(error_message_tuple->value->cstring);
   }
 }
 
