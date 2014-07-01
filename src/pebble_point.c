@@ -141,21 +141,31 @@ enum {
 
 // Give ACK to phone
 void in_received_handler(DictionaryIterator *received, void *context) {
-  Tuple *index_tuple = dict_find(received, AKEY_SLIDE_INDEX);
-  Tuple *total_tuple = dict_find(received, AKEY_SLIDE_TOTAL);
-  if (index_tuple && total_tuple){
-    static char index_message[4] = "";
-    static char total_message[16] = "";
-    snprintf(index_message, sizeof(index_message), "%u", (unsigned int)index_tuple->value->uint32);
-    snprintf(total_message, sizeof(total_message), "of %u", (unsigned int)total_tuple->value->uint32);
-    // Works to logger
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Message: %s", total_message);
-    // Doesn't work to Pebble screen
-    text_layer_set_text(slide_index_text_layer, index_message);
-    text_layer_set_text(status_text_layer, total_message);
-
-    layer_set_hidden(status_layer, false);
-    layer_set_hidden(prompt_layer, true);
+  Tuple *success_tuple = dict_find(received, AKEY_SUCCESS);
+  if((unsigned int)success_tuple->value->uint32 == 1){
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Success");
+    Tuple *index_tuple = dict_find(received, AKEY_SLIDE_INDEX);
+    Tuple *total_tuple = dict_find(received, AKEY_SLIDE_TOTAL);
+    if(index_tuple && total_tuple){
+      static char index_message[4] = "";
+      static char total_message[16] = "";
+      snprintf(index_message, sizeof(index_message), "%u", (unsigned int)index_tuple->value->uint32);
+      snprintf(total_message, sizeof(total_message), "of %u", (unsigned int)total_tuple->value->uint32);
+      // Set the response
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Message: %s %s", index_message, total_message);
+      text_layer_set_text(slide_index_text_layer, index_message);
+      text_layer_set_text(status_text_layer, total_message);
+      layer_set_hidden(status_layer, false);
+      layer_set_hidden(prompt_layer, true);
+    }
+  } else {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Failure");
+    Tuple *error_message_tuple = dict_find(received, AKEY_MESSAGE);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, error_message_tuple->value->cstring);
+    text_layer_set_text(prompt_text_layer, error_message_tuple->value->cstring);
+    text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentLeft);
+    layer_set_hidden(prompt_layer, false);
+    layer_set_hidden(status_layer, true);
   }
 }
 
