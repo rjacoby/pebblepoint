@@ -124,11 +124,17 @@ static void window_unload(Window *window) {
 // Handle ACK from phone
 void out_sent_handler(DictionaryIterator *sent, void *context) {
   // outgoing message was delivered
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Message delivered to phone");
 }
 
 // Handle NACK from phone
 void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
   // outgoing message failed
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Message NOT delivered to phone");
+  text_layer_set_text(prompt_text_layer, "Cannot connect to phone");
+  text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentLeft);
+  layer_set_hidden(prompt_layer, false);
+  layer_set_hidden(status_layer, true);
 }
 
 enum {
@@ -171,6 +177,7 @@ void in_received_handler(DictionaryIterator *received, void *context) {
 
 // Give NACK to phone
 void in_dropped_handler(AppMessageResult reason, void *context) {
+  // When can this happen?
   text_layer_set_text(prompt_text_layer, "Received a FAIL");
 }
 
