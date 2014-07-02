@@ -176,6 +176,12 @@ void in_received_handler(DictionaryIterator *received, void *context) {
     Tuple *error_message_tuple = dict_find(received, AKEY_MESSAGE);
     APP_LOG(APP_LOG_LEVEL_DEBUG, error_message_tuple->value->cstring);
     show_prompt(error_message_tuple->value->cstring);
+    static const uint32_t const segments[] = { 200, 100, 400, 100, 200, 100, 400 };
+    VibePattern pat = {
+      .durations = segments,
+      .num_segments = ARRAY_LENGTH(segments),
+    };
+    vibes_enqueue_custom_pattern(pat);
   }
 }
 
