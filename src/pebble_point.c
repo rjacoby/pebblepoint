@@ -7,7 +7,8 @@ static GFont *control_font;
 
 static void show_prompt(char* prompt_message){
   text_layer_set_text(prompt_text_layer, prompt_message);
-  text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentLeft);
+  text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentCenter);
+  text_layer_set_font(prompt_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24));
   layer_set_hidden(prompt_layer, false);
   layer_set_hidden(status_layer, true);
 }
@@ -85,11 +86,9 @@ static void window_load(Window *window) {
   GRect mid_rect = (GRect) { .origin = {0, 30}, .size = { bounds.size.w, bounds.size.h - 50}};
 
   //*** Prompt; can be replaced with status
-  int prompt_height_offset = 50;
+  int prompt_height_offset = 40;
   prompt_layer = layer_create(((GRect) { .origin = {0, prompt_height_offset}, .size = {mid_rect.size.w, mid_rect.size.h - prompt_height_offset}}));
   prompt_text_layer = text_layer_create(layer_get_bounds(prompt_layer));
-  text_layer_set_text(prompt_text_layer, "Press for Prev/Next\n\nHold for First/Last");
-  text_layer_set_text_alignment(prompt_text_layer, GTextAlignmentCenter);
   text_layer_set_background_color(prompt_text_layer, GColorBlack);
   text_layer_set_text_color(prompt_text_layer, GColorWhite);
   layer_add_child(prompt_layer, text_layer_get_layer(prompt_text_layer));
@@ -115,6 +114,9 @@ static void window_load(Window *window) {
   layer_add_child(status_layer, text_layer_get_layer(slide_index_text_layer));
   layer_add_child(window_layer, status_layer);
   layer_set_hidden(status_layer, true);
+
+  //*** Show initial messaging
+  show_prompt("Press for Prev/Next\nHold for First/Last");
 }
 
 static void window_unload(Window *window) {
