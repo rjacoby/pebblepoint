@@ -38,7 +38,7 @@ function sendFailureToPebble(jsonData) {
   console.log("failure callback", jsonData);
   Pebble.sendAppMessage({
     "success": 0,
-    "message": jsonData.errorMessage || "Check configuration"
+    "message": jsonData.errorMessage || "\nCheck configuration"
   });
 }
 
