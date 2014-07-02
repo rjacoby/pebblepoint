@@ -83,10 +83,10 @@ static void window_load(Window *window) {
   layer_add_child(window_layer, controls_layer);
 
   //*** GRect for the middle of screen
-  GRect mid_rect = (GRect) { .origin = {0, 30}, .size = { bounds.size.w, bounds.size.h - 50}};
+  GRect mid_rect = (GRect) { .origin = {0, 30}, .size = { bounds.size.w, bounds.size.h - 20}};
 
   //*** Prompt; can be replaced with status
-  int prompt_height_offset = 40;
+  int prompt_height_offset = 20;
   prompt_layer = layer_create(((GRect) { .origin = {0, prompt_height_offset}, .size = {mid_rect.size.w, mid_rect.size.h - prompt_height_offset}}));
   prompt_text_layer = text_layer_create(layer_get_bounds(prompt_layer));
   text_layer_set_background_color(prompt_text_layer, GColorBlack);
@@ -116,7 +116,7 @@ static void window_load(Window *window) {
   layer_set_hidden(status_layer, true);
 
   //*** Show initial messaging
-  show_prompt("Press for Prev/Next\nHold for First/Last");
+  show_prompt("\nPress for Prev/Next\nHold for First/Last");
 }
 
 static void window_unload(Window *window) {
