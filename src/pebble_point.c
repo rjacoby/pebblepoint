@@ -26,25 +26,21 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   // text_layer_set_text(prompt_text_layer, "Previous");
   send_message_to_phone("previous");
-  vibes_short_pulse();
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   // text_layer_set_text(prompt_text_layer, "Next");
   send_message_to_phone("next");
-  vibes_short_pulse();
 }
 
 static void long_up_click_handler(ClickRecognizerRef recognizer, void *context) {
   // text_layer_set_text(prompt_text_layer, "First");
   send_message_to_phone("first");
-  vibes_double_pulse();
 }
 
 static void long_down_click_handler(ClickRecognizerRef recognizer, void *context) {
   // text_layer_set_text(prompt_text_layer, "Last");
   send_message_to_phone("last");
-  vibes_double_pulse();
 }
 
 static void click_config_provider(void *context) {
@@ -159,14 +155,21 @@ void in_received_handler(DictionaryIterator *received, void *context) {
     if(index_tuple && total_tuple){
       static char index_message[4] = "";
       static char total_message[16] = "";
-      snprintf(index_message, sizeof(index_message), "%u", (unsigned int)index_tuple->value->uint32);
-      snprintf(total_message, sizeof(total_message), "of %u", (unsigned int)total_tuple->value->uint32);
+      unsigned int index_count = (unsigned int)index_tuple->value->uint32;
+      unsigned int total_count = (unsigned int)total_tuple->value->uint32;
+      snprintf(index_message, sizeof(index_message), "%u", index_count);
+      snprintf(total_message, sizeof(total_message), "of %u", total_count);
       // Set the response
       APP_LOG(APP_LOG_LEVEL_DEBUG, "Message: %s %s", index_message, total_message);
       text_layer_set_text(slide_index_text_layer, index_message);
       text_layer_set_text(status_text_layer, total_message);
       layer_set_hidden(status_layer, false);
       layer_set_hidden(prompt_layer, true);
+      if (index_count == 1 || index_count == total_count){
+        vibes_double_pulse();
+      } else {
+        vibes_short_pulse();
+      }
     }
   } else {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Failure");

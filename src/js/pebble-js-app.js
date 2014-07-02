@@ -38,7 +38,7 @@ function sendFailureToPebble(jsonData) {
   console.log("failure callback", jsonData);
   Pebble.sendAppMessage({
     "success": 0,
-    "message": jsonData.errorMessage
+    "message": jsonData.errorMessage || "Check configuration"
   });
 }
 
@@ -46,7 +46,7 @@ function sendPowerPointCommand(command, callback, errorCallback) {
     var req = new XMLHttpRequest();
     // Use the JS toolkit's _own_ localStorage - it's not shared with the
     // config view's browser scoped localStorage.
-    config = JSON.parse(window.localStorage.pebblepoint_options); // TODO: test for sanity?
+    config = JSON.parse(window.localStorage.pebblepoint_options);
     var url = "http://" + config.address + ":" + config.port + "/go/" + command;
     console.log("POSTing to: " + url);
     req.open("POST", url, true);
