@@ -3,6 +3,7 @@
 static Window *window;
 static Layer *prompt_layer, *status_layer, *controls_layer;
 static TextLayer *prompt_text_layer, *status_text_layer, *slide_index_text_layer, *up_label_text_layer, *down_label_text_layer;
+static GFont *control_font;
 
 static void show_prompt(char* prompt_message){
   text_layer_set_text(prompt_text_layer, prompt_message);
@@ -60,12 +61,14 @@ static void window_load(Window *window) {
 
   //*** Controls container
   controls_layer = layer_create(bounds);
+  control_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   // Top control
   up_label_text_layer = text_layer_create((GRect) { .origin = { 0, 0}, .size = { bounds.size.w - 10, 20} });
   text_layer_set_text(up_label_text_layer, "PREV");
   text_layer_set_text_alignment(up_label_text_layer, GTextAlignmentRight);
   text_layer_set_background_color(up_label_text_layer, GColorBlack);
   text_layer_set_text_color(up_label_text_layer, GColorWhite);
+  text_layer_set_font(up_label_text_layer, control_font);
   layer_add_child(controls_layer, text_layer_get_layer(up_label_text_layer));
   // Bottom control
   down_label_text_layer = text_layer_create((GRect) { .origin = { 0, bounds.size.h - 20}, .size = { bounds.size.w - 10, 20} });
@@ -73,6 +76,7 @@ static void window_load(Window *window) {
   text_layer_set_text_alignment(down_label_text_layer, GTextAlignmentRight);
   text_layer_set_background_color(down_label_text_layer, GColorBlack);
   text_layer_set_text_color(down_label_text_layer, GColorWhite);
+  text_layer_set_font(down_label_text_layer, control_font);
   layer_add_child(controls_layer, text_layer_get_layer(down_label_text_layer));
   // Add it!
   layer_add_child(window_layer, controls_layer);
