@@ -47,8 +47,14 @@ function sendPowerPointCommand(command, callback, errorCallback) {
     // Use the JS toolkit's _own_ localStorage - it's not shared with the
     // config view's browser scoped localStorage.
     config = JSON.parse(window.localStorage.pebblepoint_options);
-    var url = "http://" + config.address + ":" + config.port + "/go/" + command;
+    var hostPort = config.address + ":" + config.port;
+    var url = "http://" + hostPort + "/go/" + command;
     console.log("POSTing to: " + url);
+    req.timeout = 4000;
+    req.ontimeout = function() {
+      console.log("Timed out!!!");
+      errorCallback({'errorMessage': "Timed out to " + hostPort + "\nCheck configuration"});
+    };
     req.open("POST", url, true);
     req.responseType = "arraybuffer";
     req.onload = function(e) {

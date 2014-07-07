@@ -21,6 +21,15 @@ static void send_message_to_phone(char* command) {
   app_message_outbox_send();
 }
 
+static void vibes_error_pulse() {
+  static const uint32_t const segments[] = { 200, 100, 400, 100, 200, 100, 400 };
+  VibePattern pat = {
+    .durations = segments,
+    .num_segments = ARRAY_LENGTH(segments),
+  };
+  vibes_enqueue_custom_pattern(pat);
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   // text_layer_set_text(prompt_text_layer, "Selected");
 }
@@ -141,6 +150,7 @@ void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, voi
   // outgoing message failed
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Message NOT delivered to phone");
   show_prompt("Cannot connect to phone");
+  vibes_error_pulse();
 }
 
 enum {
@@ -182,12 +192,7 @@ void in_received_handler(DictionaryIterator *received, void *context) {
     Tuple *error_message_tuple = dict_find(received, AKEY_MESSAGE);
     APP_LOG(APP_LOG_LEVEL_DEBUG, error_message_tuple->value->cstring);
     show_prompt(error_message_tuple->value->cstring);
-    static const uint32_t const segments[] = { 200, 100, 400, 100, 200, 100, 400 };
-    VibePattern pat = {
-      .durations = segments,
-      .num_segments = ARRAY_LENGTH(segments),
-    };
-    vibes_enqueue_custom_pattern(pat);
+    vibes_error_pulse();
   }
 }
 
@@ -195,6 +200,7 @@ void in_received_handler(DictionaryIterator *received, void *context) {
 void in_dropped_handler(AppMessageResult reason, void *context) {
   // When can this happen?
   text_layer_set_text(prompt_text_layer, "Received a FAIL");
+  vibes_error_pulse();
 }
 
 
