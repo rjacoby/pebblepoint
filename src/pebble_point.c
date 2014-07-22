@@ -68,12 +68,13 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
   window_set_background_color(window, GColorBlack);
+  int prompt_height_offset = 20;
 
   //*** Controls container
   controls_layer = layer_create(bounds);
   control_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   // Top control
-  up_label_text_layer = text_layer_create((GRect) { .origin = { 0, 0}, .size = { bounds.size.w - 10, 20} });
+  up_label_text_layer = text_layer_create((GRect) { .origin = { 0, 0}, .size = { bounds.size.w - 10, prompt_height_offset} });
   text_layer_set_text(up_label_text_layer, "PREV");
   text_layer_set_text_alignment(up_label_text_layer, GTextAlignmentRight);
   text_layer_set_background_color(up_label_text_layer, GColorBlack);
@@ -81,7 +82,7 @@ static void window_load(Window *window) {
   text_layer_set_font(up_label_text_layer, control_font);
   layer_add_child(controls_layer, text_layer_get_layer(up_label_text_layer));
   // Bottom control
-  down_label_text_layer = text_layer_create((GRect) { .origin = { 0, bounds.size.h - 20}, .size = { bounds.size.w - 10, 20} });
+  down_label_text_layer = text_layer_create((GRect) { .origin = { 0, bounds.size.h - prompt_height_offset}, .size = { bounds.size.w - 10, prompt_height_offset} });
   text_layer_set_text(down_label_text_layer, "NEXT");
   text_layer_set_text_alignment(down_label_text_layer, GTextAlignmentRight);
   text_layer_set_background_color(down_label_text_layer, GColorBlack);
@@ -92,10 +93,9 @@ static void window_load(Window *window) {
   layer_add_child(window_layer, controls_layer);
 
   //*** GRect for the middle of screen
-  GRect mid_rect = (GRect) { .origin = {0, 30}, .size = { bounds.size.w, bounds.size.h - 20}};
+  GRect mid_rect = (GRect) { .origin = {0, 30}, .size = { bounds.size.w, bounds.size.h - 30}};
 
   //*** Prompt; can be replaced with status
-  int prompt_height_offset = 20;
   prompt_layer = layer_create(((GRect) { .origin = {0, prompt_height_offset}, .size = {mid_rect.size.w, mid_rect.size.h - prompt_height_offset}}));
   prompt_text_layer = text_layer_create(layer_get_bounds(prompt_layer));
   text_layer_set_background_color(prompt_text_layer, GColorBlack);
@@ -106,21 +106,21 @@ static void window_load(Window *window) {
   //*** Status; starts out hidden
   status_layer = layer_create(mid_rect);
 
-  GRect slide_index_rect = (GRect) {.origin = {0, 0}, .size = {mid_rect.size.w, mid_rect.size.h - 40}};
+  GRect slide_index_rect = (GRect) {.origin = {0, 0}, .size = {mid_rect.size.w, 64}};
   slide_index_text_layer = text_layer_create(slide_index_rect);
   text_layer_set_text_alignment(slide_index_text_layer, GTextAlignmentCenter);
   text_layer_set_font(slide_index_text_layer, fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49));
   text_layer_set_background_color(slide_index_text_layer, GColorBlack);
   text_layer_set_text_color(slide_index_text_layer, GColorWhite);
 
-  status_text_layer = text_layer_create((GRect) {.origin = {0, (slide_index_rect.origin.y + slide_index_rect.size.h)}, .size = {mid_rect.size.w, (mid_rect.size.h - slide_index_rect.size.h)}});
+  status_text_layer = text_layer_create((GRect) {.origin = {0, (slide_index_rect.origin.y + slide_index_rect.size.h)}, .size = {mid_rect.size.w, 30}});
   text_layer_set_text_alignment(status_text_layer, GTextAlignmentCenter);
   text_layer_set_font(status_text_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
   text_layer_set_background_color(status_text_layer, GColorBlack);
   text_layer_set_text_color(status_text_layer, GColorWhite);
 
-  layer_add_child(status_layer, text_layer_get_layer(status_text_layer));
   layer_add_child(status_layer, text_layer_get_layer(slide_index_text_layer));
+  layer_add_child(status_layer, text_layer_get_layer(status_text_layer));
   layer_add_child(window_layer, status_layer);
   layer_set_hidden(status_layer, true);
 
